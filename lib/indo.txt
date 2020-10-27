@@ -1,0 +1,416 @@
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'size_config.dart';
+
+class CovidData extends StatefulWidget {
+  CovidDataState createState() => CovidDataState();
+}
+
+class CovidDataState extends State<CovidData> {
+  final String url = 'https://api.kawalcorona.com/indonesia/';
+  List data;
+
+  Future<String> getData() async {
+    var res = await http
+        .get(Uri.encodeFull(url), headers: {'accept': 'application/json'});
+    setState(() {
+      data = json.decode(res.body);
+    });
+    checkData(data);
+    return 'success!';
+  }
+
+  Widget build(context) {
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            body: Container(
+                height: SizeConfig.screenHeight * 1,
+                width: SizeConfig.screenWidth * 1,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [
+                      0.3,
+                      0.2
+                    ],
+                        colors: [
+                      Color(0xFFdfedf7),
+                      Color(0xFF328bea),
+                    ])),
+                child: Column(children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.only(left: 25, top: 35, right: 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Coronavirus Update",
+                            style: TextStyle(
+                                fontSize: SizeConfig.screenWidth * 0.06,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Image.asset(
+                            'images/covid-19.png',
+                            height: SizeConfig.screenHeight * 0.1,
+                            width: SizeConfig.screenWidth * 0.2,
+                          ),
+                        ],
+                      )),
+                  Container(
+                    width: SizeConfig.screenWidth * 1,
+                    height: SizeConfig.screenHeight * 0.36,
+                    margin: EdgeInsets.only(left: 25, top: 15, right: 25),
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 10,
+                      child: Container(
+                          margin: EdgeInsets.all(10),
+                          child: Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      Image.asset('images/indonesia.png',
+                                          height: SizeConfig.screenHeight * 0.1,
+                                          width: SizeConfig.screenWidth * 0.15),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: Text(
+                                          "Indonesia",
+                                          style: TextStyle(
+                                              fontSize:
+                                                  SizeConfig.screenWidth * 0.05,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(right: 15),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "last Update",
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.screenWidth * 0.03),
+                                      ),
+                                      Text("10/10/2020",
+                                          style: TextStyle(
+                                              fontSize: SizeConfig.screenWidth *
+                                                  0.03))
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        height: SizeConfig.screenHeight * 0.1,
+                                        width: SizeConfig.screenWidth * 0.42,
+                                        alignment: Alignment.centerLeft,
+                                        child: Row(children: [
+                                          Image.asset('images/aktif.png',
+                                              height:
+                                                  SizeConfig.screenHeight * 1,
+                                              width: SizeConfig.screenWidth *
+                                                  0.12),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 10),
+                                                  child: Text(
+                                                    "Kasus Positif",
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                                .screenWidth *
+                                                            0.03),
+                                                  )),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Text(
+                                                  data == null
+                                                      ? '307,120'
+                                                      : data[0]['positif'],
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .screenWidth *
+                                                          0.03,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ])),
+                                    Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 20),
+                                        child: Row(children: [
+                                          Image.asset('images/dirawat.png',
+                                              height:
+                                                  SizeConfig.screenHeight * 0.1,
+                                              width:
+                                                  SizeConfig.screenWidth * 0.1),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 10),
+                                                  child: Text(
+                                                    "Pasien Dirawat",
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                                .screenWidth *
+                                                            0.03),
+                                                  )),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 0),
+                                                child: Text(
+                                                  data == null
+                                                      ? '63,274'
+                                                      : data[0]['dirawat'],
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .screenWidth *
+                                                          0.03,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ])),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        height: SizeConfig.screenHeight * 0.05,
+                                        width: SizeConfig.screenWidth * 0.35,
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 20),
+                                        child: Row(children: [
+                                          Image.asset('images/aktif.png',
+                                              height:
+                                                  SizeConfig.screenHeight * 0.1,
+                                              width:
+                                                  SizeConfig.screenWidth * 0.1),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 10),
+                                                  child: Text(
+                                                    "Kasus Positif",
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                                .screenWidth *
+                                                            0.03),
+                                                  )),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Text(
+                                                  data == null
+                                                      ? '307,120'
+                                                      : data[0]['positif'],
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .screenWidth *
+                                                          0.03,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ])),
+                                    Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 20),
+                                        child: Row(children: [
+                                          Image.asset('images/dirawat.png',
+                                              height:
+                                                  SizeConfig.screenHeight * 0.1,
+                                              width:
+                                                  SizeConfig.screenWidth * 0.1),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                  margin:
+                                                      EdgeInsets.only(left: 10),
+                                                  child: Text(
+                                                    "Pasien Dirawat",
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                                .screenWidth *
+                                                            0.03),
+                                                  )),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 0),
+                                                child: Text(
+                                                  data == null
+                                                      ? '63,274'
+                                                      : data[0]['dirawat'],
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .screenWidth *
+                                                          0.03,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ])),
+                                  ],
+                                ),
+                              ],
+                            )
+                          ])),
+                    ),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        height: SizeConfig.screenHeight * 0.07,
+                        margin: EdgeInsets.only(top: 15, left: 25, right: 25),
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 10,
+                          child: (Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Text("Lihat Data Provinsi",
+                                    style: TextStyle(
+                                        fontSize: SizeConfig.screenWidth * 0.04,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios_sharp,
+                                  size: SizeConfig.screenWidth * 0.05,
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/provinsi');
+                                },
+                              )
+                            ],
+                          )),
+                        ),
+                      ),
+                      Container(
+                        width: SizeConfig.screenWidth * 1,
+                        height: SizeConfig.screenHeight * 0.3,
+                        margin: EdgeInsets.only(right: 25, left: 25, top: 40),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: Text(
+                                "Disiplin Terapkan Protokol Kesehatan",
+                                style: TextStyle(
+                                    fontSize: SizeConfig.screenWidth * 0.05,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    Image.asset('images/masker.png',
+                                        width: SizeConfig.screenWidth * 0.25,
+                                        height: SizeConfig.screenHeight * 0.12),
+                                    Text(
+                                      'Menggunakan\nMasker',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.screenWidth * 0.04,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Image.asset(
+                                      'images/cucitangan.png',
+                                      width: SizeConfig.screenWidth * 0.25,
+                                      height: SizeConfig.screenHeight * 0.12,
+                                    ),
+                                    Text(
+                                      'Mencuci\nTangan',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.screenWidth * 0.04,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Image.asset(
+                                      'images/socialdistancing.png',
+                                      width: SizeConfig.screenWidth * 0.25,
+                                      height: SizeConfig.screenHeight * 0.12,
+                                    ),
+                                    Text(
+                                      'Menjaga\nJarak',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.screenWidth * 0.04,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                ]))));
+  }
+
+  void initState() {
+    super.initState();
+    this.getData();
+  }
+
+  void checkData(var myList) {
+    //length of empty list is zero
+    if (myList.length == null) {
+      print("List " + myList.toString() + " is empty");
+    } else {
+      print("List " + myList.toString() + " is not empty");
+    }
+  }
+}
